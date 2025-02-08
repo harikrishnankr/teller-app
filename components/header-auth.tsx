@@ -1,11 +1,10 @@
 import { signOutAction } from "@/app/actions";
 import Link from "next/link";
-import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/server";
 import { ThemeSwitcher } from "./theme-switcher";
 
-export default async function AuthButton() {
+export default async function HeaderAuth() {
   const supabase = await createClient();
 
   const {
@@ -19,10 +18,9 @@ export default async function AuthButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      <span className="hidden md:inline">Hey, {firstname}!</span>
       <ThemeSwitcher />
       <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
+        <Button size="sm" type="submit" variant={"outline"}>
           Sign out
         </Button>
       </form>

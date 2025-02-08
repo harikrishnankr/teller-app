@@ -1,7 +1,7 @@
-export default function Record() {
+export default function Transactions() {
   return (
     <div className="flex gap-2">
-      Record
+      Transactions
     </div>
   )
 }

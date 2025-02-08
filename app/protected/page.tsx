@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedPage() {
@@ -12,6 +11,6 @@ export default async function ProtectedPage() {
   if (!user) {
     return redirect("/sign-in");
   } else {
-    return redirect("/protected/dashboard");
+    return redirect("/protected/overview");
   }
 }

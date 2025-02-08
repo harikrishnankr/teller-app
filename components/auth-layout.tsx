@@ -12,8 +12,10 @@ export default function AuthLayout({
       <div className="flex-1 w-full flex flex-col gap-20 items-center">
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Teller</Link>
+            <div className="flex gap-5 items-center font-bold text-2xl">
+              <Link href={"/"} className="text-primary">
+                Teller
+              </Link>
             </div>
             <div className="flex gap-2">
               <ThemeSwitcher />
