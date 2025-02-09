@@ -9,7 +9,7 @@ export function Heading({
 }) {
   return (
     <div className="mb-4 flex justify-between items-center">
-      <h1>{children}</h1>
+      <h1 className="font-semibold">{children}</h1>
       {actions && <div className="flex gap-2">{actions}</div>}
     </div>
   );

@@ -1,7 +1,9 @@
-export default function Transactions() {
+import { Transactions } from "./transactions";
+
+export default function TransactionsPage() {
   return (
-    <div className="flex gap-2">
-      Transactions
-    </div>
-  )
+    <section className="rounded-xl bg-card text-card-foreground shadow-sm p-6">
+      <Transactions />
+    </section>
+  );
 }
