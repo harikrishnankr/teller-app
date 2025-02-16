@@ -29,8 +29,8 @@ export async function GET(request: NextRequest) {
       `
       )
       .eq("user_id", id)
-      .gte("date", new Date(from).toISOString()) // Filter by timestamp >= from
-      .lte("date", new Date(to).toISOString())
+      .gte("date", new Date(from as string).toISOString()) // Filter by timestamp >= from
+      .lte("date", new Date(to as string).toISOString())
       .order("date", { ascending: false });
     return Response.json({ data: transactions || [] });
   } catch {
