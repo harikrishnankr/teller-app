@@ -6,7 +6,6 @@ import { Bolt, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Category,
   CategoryExtra,
   CategoryItemsProps,
   EditCategory,
@@ -14,6 +13,7 @@ import {
 import { CategoryIcon } from "@/components/category-icon";
 import { useRouter } from "next/navigation";
 import { AddCategory } from "./add-category";
+import { Category } from "@/types";
 
 export function CategoryItems({ list }: CategoryItemsProps) {
   const router = useRouter();

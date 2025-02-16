@@ -11,11 +11,17 @@ export async function GET(request: NextRequest) {
       { status: HttpCodes.UnAuthorized }
     );
   }
-  let { data: categories, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("updated_at", { ascending: false });
-  return Response.json({ data: categories || [] });
+  try {
+    const { id } = JSON.parse(user);
+    let { data: categories, error } = await supabase
+      .from("categories")
+      .select("*")
+      .or(`user_id.is.null,user_id.eq.${id}`)
+      .order("updated_at", { ascending: false });
+    return Response.json({ data: categories || [] });
+  } catch {
+    return Response.json({ data: [] });
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -40,7 +46,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return Response.json({ error }, { status: HttpCodes.InternalServerError });
   }
-  
+
   return Response.json({ data: {} });
 }
 
@@ -54,10 +60,7 @@ export async function DELETE(request: NextRequest) {
       { status: HttpCodes.UnAuthorized }
     );
   }
-  const { error } = await supabase
-    .from("categories")
-    .delete()
-    .eq("id", ids);
+  const { error } = await supabase.from("categories").delete().eq("id", ids);
   if (error) {
     return Response.json({ error });
   }

@@ -31,6 +31,7 @@ export const NavbarRoutes = [
 export enum HttpCodes {
   Success = 200,
   UnAuthorized = 403,
+  BadRequest = 400,
   NotFound = 404,
   InternalServerError = 500,
 }

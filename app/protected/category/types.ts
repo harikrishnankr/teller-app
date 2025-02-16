@@ -1,12 +1,4 @@
-export interface Category {
-  id: number;
-  icon: string;
-  name: string;
-  type: "expense";
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-}
+import { Category } from "@/types";
 
 export interface CategoryListProps {
   categories: Category[];
