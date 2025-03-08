@@ -28,7 +28,7 @@ export function CategoryItems({ list }: CategoryItemsProps) {
 
   const deleteCategory = async (id: number) => {
     try {
-      const response = await fetch("/api/category", {
+      const response = await fetch("/api/protected/category", {
         method: "DELETE",
         cache: "no-store",
         body: JSON.stringify({ ids: [id] }),

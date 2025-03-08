@@ -26,6 +26,8 @@ import { Category } from "@/types";
 import { CategoryIcon } from "../category-icon";
 import { DatePicker } from "../ui/date-picker";
 import { format } from "date-fns";
+import { useProtectedState } from "@/state/ProtectedContext";
+import { refreshTransaction } from "@/state/actions";
 
 export interface AddTransactionProps {
   open: boolean;
@@ -61,6 +63,7 @@ export function AddTransaction({ open, onClose, onOpen }: AddTransactionProps) {
       amount: "",
     },
   });
+  const { dispatch } = useProtectedState();
 
   const onOpenChange = (event: boolean) => {
     event ? onOpen(event) : onClose(event);
@@ -74,7 +77,7 @@ export function AddTransaction({ open, onClose, onOpen }: AddTransactionProps) {
   };
 
   const fetchCategories = async () => {
-    const response = await fetch("/api/category");
+    const response = await fetch("/api/protected/category");
     const categories = await response.json();
     setCategoryList(categories.data);
   };
@@ -118,7 +121,7 @@ export function AddTransaction({ open, onClose, onOpen }: AddTransactionProps) {
       return;
     }
     try {
-      const response = await fetch("/api/transactions", {
+      const response = await fetch("/api/protected/transactions", {
         method: "POST",
         cache: "no-store",
         body: JSON.stringify({
@@ -130,6 +133,8 @@ export function AddTransaction({ open, onClose, onOpen }: AddTransactionProps) {
       });
       const category = await response.json();
       router.refresh();
+      dispatch(refreshTransaction());
+      onOpenChange(false);
     } catch {}
   };
 

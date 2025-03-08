@@ -8,8 +8,10 @@ import { Heading } from "@/components/ui/heading";
 import { utcToLocal } from "@/lib/utils";
 import { Transaction } from "@/types";
 import { format, startOfMonth, toDate } from "date-fns";
-import { SquarePlus } from "lucide-react";
+import { SquarePlus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
+import Loader from "./loading";
+import { useProtectedState } from "@/state/ProtectedContext";
 
 interface TransactionUi {
   type: "heading" | "transaction";
@@ -25,6 +27,8 @@ export function Transactions() {
     from: new Date(format(firstDayOfMonth, "MM/dd/yyyy")),
     to: new Date(),
   });
+  const [loading, setIsLoading] = useState(true);
+  const { state } = useProtectedState();
 
   const onClose = (event: boolean) => {
     setOpenTransaction(event);
@@ -35,9 +39,10 @@ export function Transactions() {
   };
 
   const fetchTransactions = async () => {
+    setIsLoading(true);
     try {
       const resp: Response = await fetch(
-        `/api/transactions?from=${format(filter.from, "MM/dd/yyyy")}&to=${format(filter.to, "MM/dd/yyyy")}`
+        `/api/protected/transactions?from=${format(filter.from, "MM/dd/yyyy")}&to=${format(filter.to, "MM/dd/yyyy")}`
       );
       if (!resp.ok) {
         throw new Error(`Failed to fetch transactions: ${resp.statusText}`);
@@ -61,15 +66,34 @@ export function Transactions() {
           transaction,
         });
       });
+      setIsLoading(false);
       setTransactions(newTransactions);
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
   };
 
+  const deleteTransaction = async (id?: number) => {
+    if (!id) {
+      return;
+    }
+    try {
+      const response = await fetch("/api/protected/transactions", {
+        method: "DELETE",
+        cache: "no-store",
+        body: JSON.stringify({ ids: [id] }),
+      });
+      const category = await response.json();
+      if (!category.error) {
+        fetchTransactions();
+      }
+    } catch {}
+  };
+
   useEffect(() => {
     fetchTransactions();
-  }, [filter]);
+  }, [filter, state.transactionRefreshToken]);
 
   return (
     <>
@@ -105,10 +129,14 @@ export function Transactions() {
       >
         Transactions
       </Heading>
+      {loading && <Loader />}
       <div>
         {transactions.map(({ transaction, type, date }, idx) =>
           type === "heading" ? (
-            <div className="mb-3 pt-5 border-t first:border-none text-[#324c5b]" key={`heading_${idx}`}>
+            <div
+              className="mb-3 pt-5 border-t first:border-none text-[#324c5b]"
+              key={`heading_${idx}`}
+            >
               <span className="font-semibold">{date}</span>
             </div>
           ) : (
@@ -124,14 +152,28 @@ export function Transactions() {
                 {transaction?.categories.name}
               </div>
               <div>{transaction?.notes}</div>
-              <div className="flex gap-1 text-destructive font-semibold">
+              <div className="flex gap-1 items-center text-destructive font-semibold">
                 <span>{transaction?.amount}</span>
                 <span>{transaction?.currency}</span>
+                <div className="ml-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => deleteTransaction(transaction?.id)}
+                  >
+                    <Trash className="text-red-600" size={14} />
+                  </Button>
+                </div>
               </div>
             </div>
           )
         )}
       </div>
+      {!transactions.length && !loading && (
+        <div className="my-6 flex justify-center items-center">
+          <span>No Transactions</span>
+        </div>
+      )}
     </>
   );
 }

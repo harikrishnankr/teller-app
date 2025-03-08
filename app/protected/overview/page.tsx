@@ -1,7 +1,9 @@
-export default function Overview() {
+import { Overview } from "./overview";
+
+export default function OverviewPage() {
   return (
-    <div className="flex gap-2">
-      Overview
-    </div>
-  )
+    <section className="rounded-xl bg-card text-card-foreground shadow-sm p-6">
+      <Overview />
+    </section>
+  );
 }

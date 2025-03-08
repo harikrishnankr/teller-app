@@ -9,13 +9,6 @@ export async function POST(
   const categoryId = (await params).categoryId;
   const supabase = await createClient();
   const { icon, name } = await request.json();
-  const user = request.headers.get("x-user-info");
-  if (!user) {
-    return Response.json(
-      { data: [], error: "Unauthorized user" },
-      { status: HttpCodes.UnAuthorized }
-    );
-  }
   try {
     const { data, error } = await supabase
       .from("categories")

@@ -3,7 +3,7 @@ import { CategoryList } from "./category";
 import { Category } from "@/types";
 
 export default async function CategoryPage() {
-  const data = await serverFetch(process.env.BASE_URL + "/api/category", {
+  const data = await serverFetch(process.env.BASE_URL + "/api/protected/category", {
     method: "GET",
     cache: "no-store"
   });

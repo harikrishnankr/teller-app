@@ -1,18 +1,13 @@
 import { HttpCodes } from "@/constants";
 import { createClient } from "@/utils/supabase/server";
+import { getUser } from "@/utils/utils";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
-  const user = request.headers.get("x-user-info");
-  if (!user) {
-    return Response.json(
-      { data: [], error: "Unauthorized user" },
-      { status: HttpCodes.UnAuthorized }
-    );
-  }
+  const user = getUser(request);
   try {
-    const { id } = JSON.parse(user);
+    const { id } = user;
     let { data: categories, error } = await supabase
       .from("categories")
       .select("*")
@@ -27,23 +22,19 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { icon, name } = await request.json();
-  const user = request.headers.get("x-user-info");
-  if (!user) {
-    return Response.json(
-      { data: [], error: "Unauthorized user" },
-      { status: HttpCodes.UnAuthorized }
-    );
-  }
+  const user = getUser(request);
   try {
-    const { id } = JSON.parse(user);
+    const { id } = user;
     const { data, error } = await supabase
       .from("categories")
       .insert([{ icon, name, type: "expense", user_id: id }])
       .select();
+    console.log(data, error);
     if (error) {
       return Response.json({ error });
     }
   } catch (error) {
+    console.log(error);
     return Response.json({ error }, { status: HttpCodes.InternalServerError });
   }
 

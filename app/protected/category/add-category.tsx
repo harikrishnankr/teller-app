@@ -60,7 +60,7 @@ export function AddCategory({ open, data, onClose, onOpen }: AddCategoryProps) {
         ...errorMessage,
       });
     }
-    const url = data ? `/api/category/${data.id}` : "/api/category";
+    const url = data ? `/api/protected/category/${data.id}` : "/api/protected/category";
     try {
       const response = await fetch(url, {
         method: "POST",

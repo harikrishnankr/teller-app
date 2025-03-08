@@ -21,3 +21,8 @@ export interface Transaction {
   type: "expense";
   categories: Category;
 }
+
+export interface MonthWiseTransaction {
+  month: string;
+  total_transactions: number;
+}

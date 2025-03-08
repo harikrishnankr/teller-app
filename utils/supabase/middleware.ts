@@ -1,3 +1,4 @@
+import { HttpCodes } from "@/constants";
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -22,17 +23,17 @@ export const updateSession = async (request: NextRequest) => {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value),
+              request.cookies.set(name, value)
             );
             response = NextResponse.next({
               request,
             });
             cookiesToSet.forEach(({ name, value, options }) =>
-              response.cookies.set(name, value, options),
+              response.cookies.set(name, value, options)
             );
           },
         },
-      },
+      }
     );
 
     // This will refresh session if expired - required for Server Components
@@ -41,14 +42,23 @@ export const updateSession = async (request: NextRequest) => {
     // protected routes
     if (request.nextUrl.pathname.startsWith("/api")) {
       const requestHeaders = new Headers(request.headers);
+      if (
+        request.nextUrl.pathname.startsWith("/api/protected") &&
+        (user.error || !user.data.user)
+      ) {
+        return Response.json(
+          { data: [], error: "Unauthorized user" },
+          { status: HttpCodes.UnAuthorized }
+        );
+      }
       if (!user.error) {
-        requestHeaders.set('x-user-info', JSON.stringify(user.data.user));
+        requestHeaders.set("x-user-info", JSON.stringify(user.data.user));
       }
       return NextResponse.next({
         request: {
           headers: requestHeaders,
         },
-      })
+      });
     }
 
     if (request.nextUrl.pathname.startsWith("/protected") && user.error) {

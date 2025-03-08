@@ -14,3 +14,12 @@ export function encodedRedirect(
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
+
+export function getUser(request: Request) {
+  const user = request?.headers?.get("x-user-info") as string;
+  try {
+    return JSON.parse(user);
+  } catch {
+    return {};
+  }
+}

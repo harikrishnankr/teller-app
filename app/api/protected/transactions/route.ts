@@ -1,18 +1,13 @@
 import { HttpCodes } from "@/constants";
 import { createClient } from "@/utils/supabase/server";
+import { getUser } from "@/utils/utils";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
-  const user = request.headers.get("x-user-info");
-  if (!user) {
-    return Response.json(
-      { data: [], error: "Unauthorized user" },
-      { status: HttpCodes.UnAuthorized }
-    );
-  }
+  const user = getUser(request);
   try {
-    const { id } = JSON.parse(user);
+    const { id } = user;
     const searchParams = request.nextUrl.searchParams;
     const from = searchParams.get("from");
     const to = searchParams.get("to");
@@ -47,7 +42,7 @@ export async function POST(request: NextRequest) {
       { status: HttpCodes.BadRequest }
     );
   }
-  const user = request.headers.get("x-user-info");
+  const user = getUser(request);
   if (!user) {
     return Response.json(
       { data: [], error: "Unauthorized user" },
@@ -55,7 +50,7 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
-    const { id } = JSON.parse(user);
+    const { id } = user;
     const { data, error } = await supabase
       .from("transactions")
       .insert([
@@ -77,6 +72,37 @@ export async function POST(request: NextRequest) {
     }
     return Response.json({ data });
   } catch (error) {
+    return Response.json({ error }, { status: HttpCodes.InternalServerError });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const supabase = await createClient();
+  const { ids } = await request.json();
+  const user = getUser(request);
+  if (!user) {
+    return Response.json(
+      { data: [], error: "Unauthorized user" },
+      { status: HttpCodes.UnAuthorized }
+    );
+  }
+  try {
+    const { id } = user;
+    const { error } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("user_id", id)
+      .eq("id", ids);
+    if (error) {
+      return Response.json({ error }, { status: HttpCodes.BadRequest });
+    }
+    return Response.json({
+      data: {
+        ids,
+      },
+    });
+  } catch (error) {
+    console.log(error);
     return Response.json({ error }, { status: HttpCodes.InternalServerError });
   }
 }
