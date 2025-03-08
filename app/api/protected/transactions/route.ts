@@ -1,6 +1,7 @@
-import { HttpCodes } from "@/constants";
+import { DBDateFormat, HttpCodes } from "@/constants";
 import { createClient } from "@/utils/supabase/server";
 import { getUser } from "@/utils/utils";
+import { format } from "date-fns";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -24,8 +25,8 @@ export async function GET(request: NextRequest) {
       `
       )
       .eq("user_id", id)
-      .gte("date", new Date(from as string).toISOString()) // Filter by timestamp >= from
-      .lte("date", new Date(to as string).toISOString())
+      .gte("date", format(new Date(from as string), DBDateFormat)) // Filter by timestamp >= from
+      .lte("date", format(new Date(to as string), DBDateFormat))
       .order("date", { ascending: false });
     return Response.json({ data: transactions || [] });
   } catch {
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
       .insert([
         {
           category_id: category,
-          date: new Date(date),
+          date: format(new Date(date), DBDateFormat),
           notes,
           amount: parseFloat(amount).toFixed(2),
           type: "expense",
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
     }
     return Response.json({ data });
   } catch (error) {
+    console.log(error);
     return Response.json({ error }, { status: HttpCodes.InternalServerError });
   }
 }

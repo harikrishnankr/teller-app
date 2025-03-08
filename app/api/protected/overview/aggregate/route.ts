@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getUser } from "@/utils/utils";
-import { HttpCodes } from "@/constants";
+import { DBDateFormat, HttpCodes } from "@/constants";
+import { format } from "date-fns";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -13,8 +14,8 @@ export async function POST(request: NextRequest) {
       .from('transactions')
       .select('amount.sum()')
       .eq("user_id", id)
-      .gte("date", new Date(from as string).toISOString())
-      .lte("date", new Date(to as string).toISOString());
+      .gte("date", format(new Date(from as string), DBDateFormat))
+      .lte("date", format(new Date(to as string), DBDateFormat));
     return Response.json({ data: transactions || [] });
   } catch (error) {
     console.log(error);

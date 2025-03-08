@@ -124,3 +124,5 @@ export const StaticIconsList = [
 ];
 
 export const DefaultIconName = "Default";
+
+export const DBDateFormat = "yyyy-MM-dd 00:00:000";
