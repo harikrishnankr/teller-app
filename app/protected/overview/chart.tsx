@@ -55,7 +55,7 @@ export function Chart() {
   }, [state.transactionRefreshToken]);
 
   return (
-    <div className="border rounded-md px-3 py-4 w-full [&_[data-chart]]:max-h-[35vh]">
+    <div className="border rounded-md w-full [&_[data-chart]]:max-h-[35vh]">
       <CardHeader>
         <CardTitle>Expense Curvature</CardTitle>
         <CardDescription>January - December {year}</CardDescription>

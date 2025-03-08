@@ -15,7 +15,7 @@ import { useProtectedState } from "@/state/ProtectedContext";
 
 const Card = ({ label, value }: { label: string; value: number }) => {
   return (
-    <div className="border rounded-md px-3 py-4 min-w-32 flex-1">
+    <div className="border rounded-md px-3 py-4 flex-1">
       <div className="mb-3">{label}</div>
       <div className="font-semibold text-2xl">₹ {value?.toFixed(2)}</div>
     </div>

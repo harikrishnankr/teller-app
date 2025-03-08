@@ -151,7 +151,7 @@ export function Transactions() {
                 />
                 {transaction?.categories.name}
               </div>
-              <div>{transaction?.notes}</div>
+              <div className="hidden md:block">{transaction?.notes}</div>
               <div className="flex gap-1 items-center text-destructive font-semibold">
                 <span>{transaction?.amount}</span>
                 <span>{transaction?.currency}</span>
